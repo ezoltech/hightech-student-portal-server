@@ -160,7 +160,13 @@ const resourceController = require("../controller/resourceController");
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: 3Thp81rDFrKXr3WrY1MyMnNK8kKoZBX9lg-JwFznR-M
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
  *       '401':
  *         description: Bad request
  *         content:
@@ -176,14 +182,362 @@ const resourceController = require("../controller/resourceController");
  *                   example: Please enter all fields
  *       '500':
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
  */
-router.post("/users/signUp", userController.signUp);
+router.post("/users/signup", userController.signUp);
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: Login
+ *     description: logs in the user with the provided information
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: the email for the user
+ *                 example: yohannes@hightech.com
+ *               password:
+ *                 type: string
+ *                 description: the password for the user
+ *                 example: sliding_monkey123
+ *     responses:
+ *       '201':
+ *         description: Login was successful!
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: 3Thp81rDFrKXr3WrY1MyMnNK8kKoZBX9lg-JwFznR-M
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       '401':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 401
+ *                 message: 
+ *                   type: string
+ *                   example: Please enter all fields
+ *       '401-1':
+ *         description: Invalid credentials!
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 401
+ *                 message: 
+ *                   type: string
+ *                   example: Invalid credentials! 
+ *       '401-2':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 401
+ *                 message: 
+ *                   type: string
+ *                   example: Please enter all fields
+ *       '401-3':
+ *         description: User doesn't exist!
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 401
+ *                 message: 
+ *                   type: string
+ *                   example: User doesn't exist!
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
 router.post("/users/login", userController.logIn);
+
+/**
+ * @swagger
+ * /users/edit:
+ *   put:
+ *     summary: Update user 
+ *     description: Updates user with the provided information
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       '200':
+ *         description: updated user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: 3Thp81rDFrKXr3WrY1MyMnNK8kKoZBX9lg-JwFznR-M
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
 router.put("/users/edit", userController.editProfile);
+
+/**
+ * @swagger
+ * /users/update-profile:
+ *   put:
+ *     summary: Update user 
+ *     description: Updates user with the provided information
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: int
+ *                 example: 1
+ *               url:
+ *                 type: string
+ *                 example: https://some-file-location/some-image.png
+ *     responses:
+ *       '200':
+ *         description: updated user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
 router.put("/users/update-profile", userController.updateProfilePicture);
+
+/**
+ * @swagger
+ * /users/update-social:
+ *   put:
+ *     summary: Update user social links
+ *     description: Updates user social links with the provided information
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: int
+ *                 example: 1
+ *               socialLinks:
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/Link'
+ *     responses:
+ *       '200':
+ *         description: Created a new user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
 router.put("/users/update-social", userController.updateSocialLinks);
+
+/**
+ * @swagger
+ * /users/id/{id}:
+ *   get:
+ *     summary: Get user by ID 
+ *     description: gets user with the provided information
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: The ID of the user to retrive
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           format: int
+ *     responses:
+ *       '200':
+ *         description: Created a new user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
 router.get("/users/id/:id", userController.getUserById);
+
+/**
+ * @swagger
+ * /users/email:
+ *   get:
+ *     summary: get user by email
+ *     description: fetchs user with the provided information
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: yohannes@hightech.com
+ *     responses:
+ *       '200':
+ *         description: fetched user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
 router.get("/users/email", userController.getUserByEmail);
+
+/**
+ * @swagger
+ * /users/username:
+ *   get:
+ *     summary: Get user by username
+ *     description: gets user with the provided information
+ *     parameters:
+ *       - name: username
+ *         in: query
+ *         description: The username of the user to retrive
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Created a new user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
 router.get("/users/username", userController.getUserByUserName);
 
 //resource controller
