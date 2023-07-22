@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const { SwaggerTheme } = require('swagger-themes');
 
 const routes = require("./routes/routes");
 const fileUpload = require("express-fileupload");
@@ -10,6 +11,7 @@ require("dotenv").config();
 
 const app = express();
 const PORT = 3000 || process.env.PORT;
+const theme = new SwaggerTheme('v3');
 
 let prisma;
 
@@ -80,7 +82,8 @@ const options = {
 
 const ops = {
     explorer: true,
-    excludeProperties: ['id']
+    excludeProperties: ['id'],
+    customCss: theme.getBuffer('dark')
 };
 
 const specifications = swaggerJsdoc(options);

@@ -23,6 +23,7 @@
     "nodemon": "^3.0.1",
     "prisma": "^5.0.0",
     "swagger-jsdoc": "^6.2.8",
+    "swagger-themes": "^1.2.30",
     "swagger-ui-express": "^5.0.0"
   }
 }
