@@ -14,8 +14,15 @@ const PORT = 3000 || process.env.PORT;
 const theme = new SwaggerTheme('v3');
 
 let prisma;
+let serverURL;
+
+//consume all console.log functions so we don't log them in prod.
+if (process.env.LOG_ENABLED === 'false') {
+    console.log = function () { };
+}
 
 if (process.env.DEBUG_MODE === 'true') {
+    serverURL = `http://localhost:${PORT}`
     prisma = new PrismaClient({
         log: ['query', 'info', 'warn'],
         errorFormat: 'pretty',
@@ -26,10 +33,7 @@ if (process.env.DEBUG_MODE === 'true') {
         },
     });
 } else {
-    //consume all console.log functions so we don't log them in prod.
-    if (process.env.CONSOLE_LOG === 'false') {
-        console.log = function () { };
-    }
+    serverURL = process.env.SERVER_URL;
     prisma = new PrismaClient({
         datasources: {
             db: {
