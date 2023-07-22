@@ -2,10 +2,69 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id                Int      @id @default(autoincrement())
+    name              String
+    email             String
+    phonenumber       String
+    password          String
+    profilepictureurl String
+    userName          String
+    socialLinks       Link[]
+    joinedAt          DateTime @default(now())
+}
+
+model Resource {
+    id            Int       @id @default(autoincrement())
+    name          String
+    title         String
+    description   String
+    tags          String
+    views         Int
+    likes         Int
+    downloadCount Int
+    status        String
+    depratment    String
+    userId        Int
+    category      String
+    filepath      String
+    comments      Comment[]
+    photos        Photo[]
+    uploadedAt    DateTime  @default(now())
+}
+
+model Link {
+    id      Int    @id @default(autoincrement())
+    name    String
+    iconUrl String
+    url     String
+    User    User?  @relation(fields: [userId], references: [id])
+    userId  Int?
+}
+
+model Photo {
+    id         Int       @id @default(autoincrement())
+    url        String
+    alt        String
+    Resource   Resource? @relation(fields: [resourceId], references: [id])
+    resourceId Int?
+}
+
+model Comment {
+    id         Int      @id @default(autoincrement())
+    userId     Int
+    resourceId Int
+    content    String
+    likes      Int
+    dislikes   Int
+    createdAt  DateTime @default(now())
+    Resource   Resource @relation(fields: [resourceId], references: [id])
 }
