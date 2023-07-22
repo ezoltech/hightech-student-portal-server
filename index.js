@@ -9,13 +9,38 @@ const { PrismaClient } = require("@prisma/client");
 require("dotenv").config();
 
 const app = express();
-const prisma = new PrismaClient();
 const PORT = 3000 || process.env.PORT;
+
+let prisma;
+
+if (process.env.DEBUG_MODE === 'true') {
+    prisma = new PrismaClient({
+        log: ['query', 'info', 'warn'],
+        errorFormat: 'pretty',
+        datasources: {
+            db: {
+                url: process.env.DATABASE_URL_DEBUG,
+            },
+        },
+    });
+} else {
+    //consume all console.log functions so we don't log them in prod.
+    if (process.env.CONSOLE_LOG === 'false') {
+        console.log = function () { };
+    }
+    prisma = new PrismaClient({
+        datasources: {
+            db: {
+                url: process.env.DATABASE_URL,
+            },
+        },
+    });
+}
 
 async function connectToDb() {
     try {
         await prisma.$connect();
-        console.log('? Database connected successfully');
+        console.log('Database connected successfully');
     } catch (error) {
         console.log(error);
         process.exit(1);
@@ -53,9 +78,9 @@ const options = {
     apis: ["./routes/*.js"],
 };
 
-const ops = { 
-    explorer: true, 
-    excludeProperties: ['id'] 
+const ops = {
+    explorer: true,
+    excludeProperties: ['id']
 };
 
 const specifications = swaggerJsdoc(options);

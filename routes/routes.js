@@ -76,6 +76,69 @@ const router = require("express").Router();
  */
 
 /**
+*  @swagger
+*  components:
+*    schemas:
+*      Resource:
+*        type: object
+*        properties:
+*          id:
+*            type: integer
+*            format: int64
+*            description: The ID of the resource
+*          name:
+*            type: string
+*            description: The name of the resource
+*          title:
+*            type: string
+*            description: The title of the resource
+*          description:
+*            type: string
+*            description: A description of the resource
+*          tags:
+*            type: string
+*            description: Comma-separated tags associated with the resource
+*          views:
+*            type: integer
+*            description: The number of views that the resource has received
+*          likes:
+*            type: integer
+*            description: The number of likes that the resource has received
+*          downloadCount:
+*            type: integer
+*            description: The number of times the resource has been downloaded
+*          status:
+*            type: string
+*            description: The status of the resource (e.g. "published", "draft")
+*          department:
+*            type: string
+*            description: The department associated with the resource
+*          userId:
+*            type: integer
+*            description: The ID of the user who uploaded the resource
+*          category:
+*            type: string
+*            description: The category of the resource (e.g. "document", "image")
+*          filepath:
+*            type: string
+*            description: The file path of the resource
+*          comments:
+*            type: array
+*            items:
+*              $ref: '#/components/schemas/Comment'
+*            description: Comments associated with the resource
+*          photos:
+*            type: array
+*            items:
+*              $ref: '#/components/schemas/Photo'
+*            description: Photos associated with the resource
+*          uploadedAt:
+*            type: string
+*            format: date-time
+*            description: The date and time when the resource was uploaded
+*/
+
+/**
  * @swagger
  * components:
  *   schemas:
@@ -403,7 +466,7 @@ router.put("/users/update-profile", userController.updateProfilePicture);
  *                   $ref: '#/components/schemas/Link'
  *     responses:
  *       '200':
- *         description: Created a new user
+ *         description: successfully updated profile
  *         content:
  *           application/json:
  *             schema:
@@ -440,7 +503,7 @@ router.put("/users/update-social", userController.updateSocialLinks);
  *           format: int
  *     responses:
  *       '200':
- *         description: Created a new user
+ *         description: feteched user by id
  *         content:
  *           application/json:
  *             schema:
@@ -517,7 +580,7 @@ router.get("/users/email", userController.getUserByEmail);
  *           type: string
  *     responses:
  *       '200':
- *         description: Created a new user
+ *         description: feteched user by username
  *         content:
  *           application/json:
  *             schema:
@@ -540,12 +603,231 @@ router.get("/users/email", userController.getUserByEmail);
  */
 router.get("/users/username", userController.getUserByUserName);
 
-//resource controller
-router.post("/create", resourceController.create);
-router.get("/id/:id", resourceController.getResourceById);
-router.get("/user/:userId", resourceController.getResourceByUserId);
-router.get("/search", resourceController.searchResources);
-router.get("/department/:department", resourceController.getResourceByDepartment);
-router.delete("/id/:id", resourceController.deleteResource);
+/**
+ * @swagger
+ * /resources/create:
+ *   post:
+ *     summary: Create a new resource
+ *     description: Creates a new resource with the provided informaiton
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Resource'
+ *     responses:
+ *       '200':
+ *         description: Created a new Resource
+ *         content:
+ *           application/json:
+ *             $ref: "#/components/schemas/Resource"
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
+router.post("/resources/create", resourceController.create);
+
+/**
+ * @swagger
+ * /resources/id/{id}:
+ *   get:
+ *     summary: Get resource by ID 
+ *     description: gets resource with the provided information
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: The ID of the resource to retrive
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           format: int
+ *     responses:
+ *       '200':
+ *         description: Created a new resource
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Resource'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
+router.get("/resources/id/:id", resourceController.getResourceById);
+
+/**
+ * @swagger
+ * /resources/user/{userId}:
+ *   get:
+ *     summary: Get resource by userId 
+ *     description: gets resource with the provided information
+ *     parameters:
+ *       - name: userId
+ *         in: path
+ *         description: The userId of the resource to retrive
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           format: int
+ *     responses:
+ *       '200':
+ *         description: fetched resource by userId
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Resource'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
+router.get("/resources/user/:userId", resourceController.getResourceByUserId);
+
+/**
+ * @swagger
+ * /resources/search:
+ *   get:
+ *     summary: search resources
+ *     description: searchs resource with the provided query
+ *     parameters:
+ *       - name: q
+ *         in: query
+ *         description: The query of the resource to search
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: result
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Resource'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
+router.get("/resources/search", resourceController.searchResources);
+
+/**
+ * @swagger
+ * /resources/department/{department}:
+ *   get:
+ *     summary: Get resource by department 
+ *     description: gets resource with the provided information
+ *     parameters:
+ *       - name: department
+ *         in: path
+ *         description: The ID of the resource to retrive
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Created a new resource
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Resource'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
+router.get("/resources/department/:department", resourceController.getResourceByDepartment);
+
+/**
+ * @swagger
+ * /resources/id/{id}:
+ *   delete:
+ *     summary: Delete resource by ID 
+ *     description: Delete resource with the provided information
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: The ID of the resource to Delete
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           format: int
+ *     responses:
+ *       '200':
+ *         description: Deleted a resource
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Resource'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Internal error check the server log!!
+ */
+router.delete("/resources/id/:id", resourceController.deleteResource);
 
 module.exports = router;
