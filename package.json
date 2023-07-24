@@ -6,15 +6,24 @@
   "repository": "https://github.com/ezoltech/hightech-student-portal",
   "author": "hightech",
   "license": "MIT",
-  "private": true,
+  "private": false,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
   "dependencies": {
-    "@prisma/client": "^4.16.2",
-    "bcrypt": "^5.1.0",
+    "@prisma/client": "^5.0.0",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.0",
-    "nodemon": "^2.0.22",
-    "prisma": "^4.16.2"
+    "express-fileupload": "^1.4.0",
+    "jsonwebtoken": "^9.0.1",
+    "nodemon": "^3.0.1",
+    "prisma": "^5.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-themes": "^1.2.30",
+    "swagger-ui-express": "^5.0.0"
   }
 }
